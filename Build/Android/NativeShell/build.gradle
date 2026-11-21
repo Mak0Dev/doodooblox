@@ -1,0 +1,187 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+apply plugin: 'android'
+
+def getVersionCode = { ->
+    def code = project.hasProperty('versionCode') ? versionCode.toInteger() : 25
+    return code
+}
+
+def getVersionName = { ->
+    def name = project.hasProperty('versionName') ? versionName : "2.176.53771"
+    return name
+}
+
+// DoodooBlox: local SDK maven repos carry play-services 7.0.0 / support 23.2.0
+// (the old jcenter-era artifacts are no longer online)
+repositories {
+    mavenCentral()
+    maven { url 'file:///C:/Users/Nicolas/AppData/Local/Android/Sdk/extras/android/m2repository' }
+    maven { url 'file:///C:/Users/Nicolas/AppData/Local/Android/Sdk/extras/google/m2repository' }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
+    // DoodooBlox: 2014 shell only needs support-v4 (DrawerLayout)
+    compile "com.android.support:support-v4:23.2.0"
+    compile("com.google.android.gms:play-services:7.0.0") {
+        exclude module: 'ads'
+        exclude module: 'support-v4'
+    }
+    compile("com.google.android.gms:play-services-ads:7.0.0") {
+        exclude module: 'support-v4'
+    }
+
+    compile 'com.android.support:multidex:1.0.0'
+
+    // for testing
+    testCompile 'junit:junit:4.12'
+    androidTestCompile 'junit:junit:4.12'
+    androidTestCompile 'com.android.support.test:runner:0.4'
+    // Set this dependency to use JUnit 4 rules
+    androidTestCompile 'com.android.support.test:rules:0.4'
+}
+
+android {
+    signingConfigs {
+        packageRelease {
+            // The signing key and its passwords are not in the repository: set
+            // DDB_KEYSTORE, DDB_KEY_ALIAS and DDB_KEY_PASSWORD in
+            // ~/.gradle/gradle.properties (or as environment variables).
+            def ddb = { String n, String d -> project.hasProperty(n) ? project.property(n) : (System.getenv(n) ?: d) }
+            keyAlias ddb('DDB_KEY_ALIAS', 'doodooblox')
+            keyPassword ddb('DDB_KEY_PASSWORD', '')
+            // Java 8's keytool cannot read the original Java 21 PKCS#12
+            // parameters; a JKS copy holds the same key and certificate.
+            storeFile file(ddb('DDB_KEYSTORE', 'D:/DoodooAndroid/doodooblox.jks'))
+            storePassword ddb('DDB_KEY_PASSWORD', '')
+            storeType 'JKS'
+        }
+    }
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+    lintOptions {
+        abortOnError false
+    }
+    enforceUniquePackageName = false;
+
+    // Future TODO: change Apache HTTP usage to URLConnection
+    // Apache HTTP deprecated since API-22, but used in ReCaptcha library
+    // To continue using the Apache HTTP APIs, declare the following:
+    useLibrary 'org.apache.http.legacy'
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+
+            jni.srcDirs = []
+            jniLibs.srcDirs = ['libs']
+        }
+
+        dev {
+            res.srcDirs = ['dev']
+            java.srcDirs = ['dev/src']
+        }
+
+        pub {
+            res.srcDirs = ['pub']
+            java.srcDirs = ['pub/src']
+        }
+
+        amazon {
+            res.srcDirs = ['pub']
+            java.srcDirs = ['pub/src']
+        }
+
+        // Organize test folders
+        androidTest{
+            setRoot('tests')
+            java.srcDirs = ['tests/androidTests/src']
+            res.srcDirs = ['tests/androidTests/res']
+        }
+
+        test {
+            setRoot('tests')
+            java.srcDirs = ['tests/unitTests/src']
+            res.srcDirs = ['tests/unitTests/res']
+        }
+
+        // Move the build types to build-types/<type>
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+    }
+
+    defaultConfig {
+        applicationId "com.doodooblox.gametest1"
+        versionCode getVersionCode()
+        versionName getVersionName()
+        targetSdkVersion 21
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+
+        // Enabling multidex support.
+        multiDexEnabled true
+
+        // Stops the Gradle plugin’s automatic rasterization of vectors (AppCompat v23.2)
+        generatedDensities = []
+    }
+
+    // Flag to tell aapt to keep the attribute ids around (AppCompat v23.2)
+    aaptOptions {
+        additionalParameters "--no-version-vectors"
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            force 'com.android.support:support-annotations:23.0.1'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.packageRelease
+        }
+    }
+    splits {
+        abi {
+            enable true
+            universalApk false
+            reset()
+            include 'armeabi-v7a' // libroblox.so built from the trunk (NEON)
+        }
+    }
+
+    productFlavors {
+        dev {
+            applicationId "com.doodooblox.doodoo.dev"
+            buildConfigField "boolean", "USE_AMAZON_PURCHASING", "false"
+        }
+        pub {
+            applicationId "com.doodooblox.gametest1"
+            buildConfigField "boolean", "USE_AMAZON_PURCHASING", "false"
+        }
+        amazon {
+            applicationId "com.doodooblox.gametest1"
+            buildConfigField "boolean", "USE_AMAZON_PURCHASING", "true"
+        }
+    }
+
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "2g"
+    }
+}

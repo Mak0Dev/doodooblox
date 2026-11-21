@@ -1,0 +1,23 @@
+#!/bin/sh
+# Registers this RobloxPlayerLinux as the handler for @RBX_PROTOCOL_SCHEME@:// links,
+# so the site's Play button starts it.  Run it again after moving the folder.
+set -e
+
+HERE="$(cd "$(dirname "$0")" && pwd)"
+APPS="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
+DESKTOP="$APPS/@RBX_PROTOCOL_SCHEME@-player.desktop"
+
+mkdir -p "$APPS"
+cat > "$DESKTOP" <<DESKTOP_FILE
+[Desktop Entry]
+Type=Application
+Name=Better16 Player
+Exec="$HERE/RobloxPlayerLinux" %u
+Terminal=false
+NoDisplay=true
+MimeType=x-scheme-handler/@RBX_PROTOCOL_SCHEME@;
+DESKTOP_FILE
+
+update-desktop-database "$APPS" 2>/dev/null || true
+xdg-mime default "$(basename "$DESKTOP")" x-scheme-handler/@RBX_PROTOCOL_SCHEME@
+echo "Registered $DESKTOP for @RBX_PROTOCOL_SCHEME@:// links."

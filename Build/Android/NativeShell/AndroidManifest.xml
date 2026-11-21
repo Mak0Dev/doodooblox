@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DoodooBlox: 2014 (2.176) app shell - sidebar UI. The 2016 shell is in ../_ui2016_backup -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.roblox.client"
+    android:versionCode="25"
+    android:versionName="2.176.53771" >
+
+    <supports-screens android:smallScreens="false"
+                      android:normalScreens="true"
+                      android:largeScreens="true"
+                      android:xlargeScreens="true"
+                      android:requiresSmallestWidthDp="300" />
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="19" />
+
+    <uses-permission android:name="com.android.vending.BILLING"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
+
+    <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
+    <uses-feature android:name="android.hardware.bluetooth" android:required="false"/>
+
+    <application
+        android:name="com.roblox.client.RobloxApplication"
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/DoodooBloxAppName"
+        android:largeHeap="true"
+        android:theme="@style/AppTheme">
+
+        <!-- DoodooBlox: no 16:9 letterboxing on long (18:9 / 20:9 / 21:9) screens -->
+        <meta-data android:name="android.max_aspect" android:value="3.0" />
+
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
+
+        <service android:name="com.roblox.client.RobloxService" android:exported="false" android:process=":service" android:stopWithTask="false"/>
+
+        <activity android:name="com.roblox.client.ActivityNativeMain" android:label="@string/DoodooBloxAppName" android:launchMode="singleTop" android:screenOrientation="sensorLandscape" android:theme="@style/AppTheme" android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.roblox.client.ActivityNativeSidebar" android:allowTaskReparenting="false" android:label="@string/DoodooBloxAppName" android:launchMode="singleTop" android:multiprocess="false" android:screenOrientation="sensorLandscape" android:theme="@style/AppTheme" android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.roblox.client.ActivityWebView" android:label="@string/DoodooBloxAppName" android:launchMode="singleTop" android:screenOrientation="sensorLandscape" android:theme="@style/AppTheme">
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value="com.roblox.client.ActivityNativeMain"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.roblox.client.ActivityAdColony" android:label="@string/DoodooBloxAppName" android:launchMode="singleTop" android:screenOrientation="sensorLandscape" android:theme="@style/AppTheme">
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value="com.roblox.client.ActivityNativeMain"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.roblox.client.ActivityFragmentTest" android:label="@string/DoodooBloxAppName" android:launchMode="singleTop" android:screenOrientation="sensorLandscape" android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.roblox.client.ActivityGlView" android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize" android:label="@string/DoodooBloxAppName" android:launchMode="singleTask" android:process=":glview" android:screenOrientation="sensorLandscape" android:theme="@style/AppTheme" android:windowSoftInputMode="adjustResize">
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value="com.roblox.client.ActivityWebView"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.roblox.client.ActivityCurlTest" android:label="@string/DoodooBloxAppName" android:launchMode="singleTop" android:screenOrientation="sensorLandscape" android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.jirbo.adcolony.AdColonyOverlay" android:configChanges="keyboardHidden|orientation|screenSize" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>
+        <activity android:name="com.jirbo.adcolony.AdColonyFullscreen" android:configChanges="keyboardHidden|orientation|screenSize" android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"/>
+        <activity android:name="com.jirbo.adcolony.AdColonyBrowser" android:configChanges="keyboardHidden|orientation|screenSize" android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"/>
+
+        <receiver android:name="com.mobileapptracker.Tracker" android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.amazon.device.iap.ResponseReceiver">
+            <intent-filter>
+                <action android:name="com.amazon.inapp.purchasing.NOTIFY" android:permission="com.amazon.inapp.purchasing.Permission.NOTIFY"/>
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

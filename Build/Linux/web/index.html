@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Better16 WebPlayer</title>
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            background: #000;
+            color: #fff;
+            font: 16px/1.4 "Source Sans Pro", system-ui, sans-serif;
+            overflow: hidden;
+        }
+        
+        #canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            outline: none;
+            cursor: none;
+        }
+        
+        #overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            background: #000;
+        }
+        
+        #overlay[hidden] {
+            display: none;
+        }
+        
+        #wait {
+            font-size: 20px;
+            letter-spacing: .5px;
+        }
+        
+        body.failed #wait {
+            display: none;
+        }
+        
+        #bar {
+            width: min(320px, 70vw);
+            height: 3px;
+            background: #222;
+            overflow: hidden;
+            visibility: hidden;
+        }
+        
+        body.downloading #bar {
+            visibility: visible;
+        }
+        
+        #bar>div {
+            height: 100%;
+            width: 0;
+            background: #fff;
+            transition: width .2s;
+        }
+        
+        body.failed #bar {
+            display: none;
+        }
+        
+        #error {
+            color: #f77;
+            white-space: pre-wrap;
+            text-align: center;
+            max-width: 80vw;
+        }
+        
+        #error a {
+            color: #fff;
+        }
+        
+        #hint {
+            position: fixed;
+            left: 50%;
+            bottom: 12px;
+            transform: translateX(-50%);
+            padding: 6px 12px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, .6);
+            color: #fff;
+            font-size: 13px;
+            pointer-events: none;
+        }
+        
+        #hint[hidden] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" tabindex="-1"></canvas>
+
+    <div id="overlay">
+        <div id="wait">Loading...</div>
+        <div id="bar">
+            <div></div>
+        </div>
+        <div id="error"></div>
+    </div>
+
+    <div id="hint" hidden>Click to capture the mouse &middot; Esc releases it</div>
+
+    <script src="player-cache.js"></script>
+    <script src="player.js"></script>
+</body>
+
+</html>

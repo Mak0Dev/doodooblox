@@ -1,0 +1,61 @@
+# Visual Studio build output
+obj/
+ipch/
+bin/Release*/
+bin/NoOpt*/
+bin/Debug*/
+bin/x64/
+Win32/Release/
+Win32/Debug/
+/Build/Release/
+/Build/Debug/
+/Build/NoOpt/
+/Build/UploadBits/
+/Build/_rsc/
+*.PrepForUpload/Release/
+*.PrepForUpload/NoOpt/
+*.obj
+*.pch
+*.pdb
+*.ilk
+*.idb
+*.ipch
+*.tlog
+*.lastbuildstate
+*.unsuccessfulbuild
+*.exp
+*.bsc
+*.sdf
+*.opensdf
+*.suo
+*.user
+*.log
+*.tmp
+*.dbg
+*.bak
+*-bak
+
+# Third-party libraries live beside Build, not in it
+/Contribs/
+/Build/Contribs
+
+# Android build output and machine-specific files
+.gradle/
+# (anchored: on Windows "build/" would also match the Build folder itself)
+/Build/Android/**/build/
+*.apk
+*.ap_
+*.dex
+*.obb
+*.iml
+local.properties
+
+# Secrets: signing keys and API secrets stay off GitHub
+*.keystore
+*.jks
+robloxAndroidPK_DO_NOT_DELETE
+crashlytics.properties
+
+# Web client (browser Studio) is not part of this repository
+/Build/LinuxStudio/
+/Build/webplayer/

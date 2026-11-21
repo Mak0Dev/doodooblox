@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Better16 preload</title></head>
+<body>
+<!--
+  Loaded by the site's Play dialog in a hidden frame: puts the web player's
+  files into this origin's cache while the dialog shows the progress, so the
+  game page opens straight into the game. ?console=1 (from xplay.<domain>)
+  adds the console mode's own content. Messages to the parent:
+    { type: 'progress', loaded, total } - bytes, unpacked
+    { type: 'done' }
+    { type: 'error', message }
+-->
+<script src="player-cache.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // Only the site this player belongs to may ask: www.<domain> for
+  // play.<domain> (or xplay.<domain>), or this same origin for /play/ on a
+  // single host.
+  var query = new URLSearchParams(location.search);
+  var parentOrigin = query.get('origin') || '';
+  var extra = query.get('console') === '1' ? ['RobloxConsole.data'] : [];
+  var domain = location.hostname.replace(/^x?play\./, '');
+  var parentHost;
+  try { parentHost = new URL(parentOrigin).hostname; } catch (e) { return; }
+  if (parentOrigin !== location.origin && parentHost !== domain && !parentHost.endsWith('.' + domain))
+    return;
+
+  function post(message) {
+    if (self.parent !== self) self.parent.postMessage(message, parentOrigin);
+  }
+
+  PlayerCache.manifest()
+    .then(function (files) {
+      return PlayerCache.has(files.build, extra).then(function (cached) {
+        if (cached) return;
+        return PlayerCache.get(function (loaded, total) {
+          post({ type: 'progress', loaded: loaded, total: total });
+        }, extra);
+      });
+    })
+    .then(function () { post({ type: 'done' }); })
+    .catch(function (e) { post({ type: 'error', message: String(e && e.message || e) }); });
+})();
+</script>
+</body>
+</html>

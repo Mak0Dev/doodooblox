@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="games_page_item_background">#ffffff</color>
+    <color name="games_page_item_description">#707070</color>
+    <color name="games_page_item_link">#202020</color>
+    <color name="login_button_green">#00b058</color>
+    <color name="native_sidebar_background">#202020</color>
+    <color name="native_sidebar_page_background">#dadcda</color>
+    <color name="native_sidebar_page_heading">#202020</color>
+    <color name="native_sidebar_top_row">#343434</color>
+    <color name="shell_dialog_background">#d0d0d0</color>
+    <color name="shell_dialog_bar">#ffffff</color>
+    <color name="shell_text_hint_visible">#505050</color>
+    <color name="shell_text_link">#5050ff</color>
+    <color name="shell_text_normal">#000000</color>
+    <color name="webview_background">#b0b0b0</color>
+    <color name="webview_header">#cccccc</color>
+    <color name="webview_text">#202020</color>
+    <color name="webview_url">#eeeeee</color>
+</resources>
